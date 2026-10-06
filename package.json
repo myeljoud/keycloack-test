@@ -1,0 +1,14 @@
+{
+  "name": "next-console-keycloak-poc",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter app dev",
+    "typecheck": "pnpm --filter app typecheck",
+    "theme:dev": "pnpm --filter keycloak-theme dev",
+    "theme:storybook": "pnpm --filter keycloak-theme storybook",
+    "build:theme": "pnpm --filter keycloak-theme build-keycloak-theme && cp keycloak-theme/dist_keycloak/keycloak-theme-for-kc-all-other-versions.jar keycloak/providers/next-console-theme.jar",
+    "keycloak:up": "docker compose -f keycloak/docker-compose.yml up -d",
+    "keycloak:down": "docker compose -f keycloak/docker-compose.yml down -v",
+    "keycloak:logs": "docker compose -f keycloak/docker-compose.yml logs -f"
+  }
+}

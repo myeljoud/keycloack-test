@@ -1,0 +1,8 @@
+packages:
+  - app
+  - keycloak-theme
+onlyBuiltDependencies:
+  - esbuild
+  - lightningcss
+  - sharp
+  - workerd
