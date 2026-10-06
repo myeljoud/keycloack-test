@@ -53,6 +53,67 @@ Keycloak needed), `pnpm theme:storybook`, `pnpm keycloak:logs`, `pnpm keycloak:d
    `logout_token` when an admin ends a session or disables a user. Verified with
    `jose` against Keycloak's JWKS; matching sessions are deleted immediately.
 
+### Sequence: sign-in
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant B as Browser
+    participant W as Worker (BFF)
+    participant K as Keycloak
+
+    B->>W: GET /auth/login
+    W->>W: state, nonce, PKCE verifier → HttpOnly flow cookie (10 min)
+    W->>K: PAR: push authorization request (client secret)
+    K-->>W: request_uri
+    W-->>B: 302 → Keycloak authorize?request_uri=…
+    B->>K: GET authorize (themed Keycloakify login page)
+    B->>K: POST username + password (Keycloak's form, not ours)
+    K-->>B: 302 → /auth/callback?code&state
+    B->>W: GET /auth/callback
+    W->>K: POST token (code + client secret + PKCE verifier)
+    K-->>W: access, refresh, ID token
+    W->>W: verify ID token (JWKS, iss, aud, nonce), store tokens in Durable Object
+    W-->>B: 302 → returnTo + Set-Cookie session=<opaque> HttpOnly SameSite=Lax
+```
+
+### Sequence: session lifecycle
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant B as Browser
+    participant W as Worker (BFF)
+    participant K as Keycloak
+
+    rect rgb(245,245,245)
+    note over B,K: Any page load, access token about to expire
+    B->>W: request with session cookie
+    W->>K: POST token (grant_type=refresh_token)
+    K-->>W: rotated access + refresh token (old refresh token revoked)
+    W-->>B: page (cookie unchanged)
+    end
+
+    rect rgb(245,245,245)
+    note over B,K: User clicks Log out
+    B->>W: POST /auth/logout (Origin checked)
+    W->>W: delete session from Durable Object
+    W->>K: POST revoke (refresh token)
+    W-->>B: 303 → Keycloak end_session?id_token_hint
+    B->>K: GET end_session
+    K-->>B: 302 → / (SSO session ended)
+    end
+
+    rect rgb(245,245,245)
+    note over B,K: Admin ends the session / disables the user
+    K->>W: POST /auth/backchannel-logout (logout_token JWT)
+    W->>W: verify JWT against JWKS, delete sessions by sid
+    W-->>K: 200
+    B->>W: next request
+    W-->>B: 302 → /auth/login
+    end
+```
+
 Keycloak client hardening in `keycloak/import/next-realm.json`: confidential
 client, authorization code only (no direct access grants, no implicit), PKCE
 S256 required, PAR required, refresh-token rotation (`revokeRefreshToken`,

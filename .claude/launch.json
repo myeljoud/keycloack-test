@@ -4,8 +4,23 @@
     {
       "name": "app",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["--filter", "app", "dev"],
+      "runtimeArgs": [
+        "--filter",
+        "app",
+        "dev"
+      ],
       "port": 3000
+    },
+    {
+      "name": "storybook",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--filter",
+        "keycloak-theme",
+        "storybook",
+        "--no-open"
+      ],
+      "port": 6006
     }
   ]
 }
