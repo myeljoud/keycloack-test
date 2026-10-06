@@ -1,0 +1,2 @@
+# Copy to .dev.vars (git-ignored). Must match the client secret in ../keycloak/realm-export.json
+KEYCLOAK_CLIENT_SECRET=dev-only-next-console-secret

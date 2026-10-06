@@ -1,0 +1,22 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "next-console-poc",
+	"compatibility_date": "2026-10-01",
+	"compatibility_flags": ["nodejs_compat"],
+	"main": "src/server.ts",
+	"observability": { "enabled": true },
+	"upload_source_maps": true,
+	"durable_objects": {
+		"bindings": [{ "name": "SESSIONS", "class_name": "SessionStore" }]
+	},
+	"exports": {
+		"SessionStore": { "type": "durable-object", "storage": "sqlite" }
+	},
+	"vars": {
+		"APP_URL": "http://localhost:3000",
+		"KEYCLOAK_ISSUER": "http://localhost:8080/realms/next",
+		"KEYCLOAK_CLIENT_ID": "next-console",
+		"SESSION_TTL_SECONDS": "28800"
+	},
+	"secrets": { "required": ["KEYCLOAK_CLIENT_SECRET"] }
+}
