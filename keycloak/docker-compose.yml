@@ -1,6 +1,7 @@
 services:
   keycloak:
-    image: quay.io/keycloak/keycloak:26.8.0
+    build: .
+    image: next-console/keycloak:dev
     command: ["start-dev", "--import-realm"]
     ports:
       - "8080:8080"
@@ -15,11 +16,11 @@ services:
       KC_SPI_THEME_CACHE_THEMES: "false"
       KC_SPI_THEME_CACHE_TEMPLATES: "false"
       KC_SPI_THEME_STATIC_MAX_AGE: "-1"
+    # The theme JAR is baked in by the Dockerfile (see keycloak/Dockerfile);
+    # run `pnpm keycloak:up` again after `pnpm build:theme` to rebuild it.
     volumes:
       # Realm "next" with the confidential client + a test user (imported only if absent).
       - ./import:/opt/keycloak/data/import:ro
-      # Keycloakify output: pnpm build:theme copies the JAR here.
-      - ./providers:/opt/keycloak/providers
     extra_hosts:
       # Lets Keycloak reach the app on the host for back-channel logout.
       - "host.docker.internal:host-gateway"

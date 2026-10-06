@@ -130,9 +130,12 @@ Keycloak's. Tokens from the Figma file live in `src/login/main.css`. Every other
 page (reset password, OTP, errors…) still uses Keycloakify's default look until
 it is ejected the same way: `npx keycloakify eject-page` inside `keycloak-theme/`.
 
-After changing the theme: `pnpm build:theme` and reload. Keycloak runs with
-theme caching off, so no restart is needed; a new JAR in `providers/` is picked
-up on the next request (restart the container if it isn't).
+After changing the theme: `pnpm build:theme` then `pnpm keycloak:up` (it
+rebuilds the Keycloak image with the new JAR baked in; realm data is kept
+only if the container is not recreated, so expect a fresh realm). The JAR is
+copied into the image rather than bind-mounted on purpose: Keycloak memory-maps
+provider JARs and a macOS bind mount makes it fail with "Failed to load
+themes" in the admin console.
 
 ## Production notes (not done in this PoC)
 
