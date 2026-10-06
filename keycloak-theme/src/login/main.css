@@ -1,0 +1,437 @@
+/* Next Console login theme — tokens lifted from the Figma "Next Console, Login" frame. */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=IBM+Plex+Sans:wght@600&display=swap");
+
+:root {
+    --color-background: #f9fafb;
+    --color-surface-raised: #ffffff;
+    --color-surface-neutral-subtle: rgba(23, 23, 23, 0.03);
+    --color-surface-input: #ffffff;
+    --color-surface-accent: #5b5b5b;
+    --color-surface-accent-hover: #4a4a4a;
+    --color-content-default: #121314;
+    --color-content-subtle: #505258;
+    --color-content-subtlest: #6b6d76;
+    --color-content-inverse: #ffffff;
+    --color-content-accent: #5b5b5b;
+    --color-content-danger: #b42318;
+    --color-border-input: #dddee1;
+    --color-border-focused: #4686ec;
+    --color-border-default: rgba(5, 21, 36, 0.06);
+    --color-border-danger: #f04438;
+    --color-grid-line: #7d808a;
+    --radius-md: 6px;
+    --radius-sm: 3px;
+    --radius-xl: 12px;
+    --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.06);
+    --shadow-raised: 0 0 1px rgba(30, 31, 33, 0.31), 0 1px 1px rgba(30, 31, 33, 0.25);
+    --font-ui: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --font-heading: "IBM Plex Sans", var(--font-ui);
+    --font-brand: -apple-system, "SF Pro", var(--font-ui);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+    background: var(--color-background);
+    color: var(--color-content-default);
+    font-family: var(--font-ui);
+    font-feature-settings: "salt" 1;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Page shell ---------- */
+
+.nc-page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    min-height: 100vh;
+    padding: 8px 8px 48px;
+    overflow: hidden;
+    background: var(--color-surface-neutral-subtle);
+    isolation: isolate;
+}
+
+.nc-grid {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    opacity: 0.12;
+    pointer-events: none;
+}
+
+.nc-grid__vertical {
+    position: absolute;
+    inset: 0;
+    /* The Figma layer is a 931×1277 line sheet rotated -90°; a repeating gradient reads the same. */
+    background-image: repeating-linear-gradient(
+        to right,
+        var(--color-grid-line) 0 1px,
+        transparent 1px 80px
+    );
+    background-position: center top;
+}
+
+.nc-grid__diagonal {
+    position: absolute;
+    top: 40%;
+    width: 113px;
+    height: 366px;
+}
+
+.nc-grid__diagonal--left {
+    left: 0;
+}
+
+.nc-grid__diagonal--right {
+    right: 0;
+}
+
+.nc-glow {
+    position: absolute;
+    left: 50%;
+    bottom: -520px;
+    width: 826px;
+    height: 826px;
+    transform: translateX(-50%);
+    z-index: -1;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(70, 134, 236, 0.18) 0%, rgba(70, 134, 236, 0) 65%);
+    pointer-events: none;
+}
+
+/* ---------- Logo lockup ---------- */
+
+.nc-logo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.nc-logo__mark {
+    display: block;
+    width: 71px;
+    height: 28px;
+}
+
+.nc-logo__divider {
+    width: 1px;
+    height: 22px;
+    background: var(--color-border-input);
+}
+
+.nc-logo__product {
+    font-family: var(--font-brand);
+    font-weight: 590;
+    font-size: 20px;
+    line-height: 28px;
+    letter-spacing: -0.15px;
+    color: var(--color-content-subtlest);
+}
+
+/* ---------- Card ---------- */
+
+.nc-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    width: 380px;
+    max-width: 100%;
+    padding: 24px;
+    background: var(--color-surface-raised);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-raised);
+}
+
+.nc-card__title {
+    margin: 0;
+    width: 100%;
+    text-align: center;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 32px;
+    letter-spacing: -0.25px;
+    color: var(--color-content-subtle);
+}
+
+.nc-card__content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.nc-alert {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    line-height: 18px;
+}
+
+.nc-alert--error {
+    background: #fef3f2;
+    color: var(--color-content-danger);
+    border: 1px solid #fecdca;
+}
+
+.nc-alert--success {
+    background: #ecfdf3;
+    color: #067647;
+    border: 1px solid #abefc6;
+}
+
+.nc-alert--warning,
+.nc-alert--info {
+    background: #f3f4f6;
+    color: var(--color-content-subtle);
+    border: 1px solid var(--color-border-input);
+}
+
+/* ---------- Form controls ---------- */
+
+.nc-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    margin: 0;
+}
+
+.nc-field {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.nc-field__label {
+    padding-bottom: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: -0.1px;
+    color: var(--color-content-default);
+}
+
+.nc-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 36px;
+    padding: 0 4px 0 10px;
+    background: var(--color-surface-input);
+    border: 1px solid var(--color-border-input);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-subtle);
+}
+
+.nc-input-wrap:focus-within {
+    border-color: var(--color-border-focused);
+    box-shadow: inset 0 0 0 1px var(--color-border-focused), var(--shadow-subtle);
+}
+
+.nc-input-wrap[data-invalid="true"] {
+    border-color: var(--color-border-danger);
+}
+
+.nc-input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font: inherit;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: -0.1px;
+    color: var(--color-content-default);
+}
+
+.nc-input::placeholder {
+    font-weight: 400;
+    color: var(--color-content-subtlest);
+}
+
+.nc-icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-content-default);
+    cursor: pointer;
+}
+
+.nc-icon-button:hover {
+    background: rgba(23, 23, 23, 0.06);
+}
+
+.nc-icon-button:focus-visible {
+    outline: 2px solid var(--color-border-focused);
+    outline-offset: 1px;
+}
+
+.nc-icon-button img {
+    width: 16px;
+    height: 16px;
+}
+
+.nc-field__error {
+    padding-top: 6px;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--color-content-danger);
+}
+
+/* ---------- Remember / forgot row ---------- */
+
+.nc-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+}
+
+.nc-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: -0.1px;
+}
+
+.nc-checkbox input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    border: 0;
+}
+
+.nc-checkbox__knob {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 17px;
+    height: 17px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border-input);
+    background: var(--color-surface-input);
+    box-shadow: var(--shadow-subtle);
+}
+
+.nc-checkbox__knob img {
+    width: 11px;
+    height: 11px;
+    opacity: 0;
+}
+
+.nc-checkbox input:checked + .nc-checkbox__knob {
+    background: var(--color-surface-accent);
+    border-color: var(--color-surface-accent);
+}
+
+.nc-checkbox input:checked + .nc-checkbox__knob img {
+    opacity: 1;
+}
+
+.nc-checkbox input:focus-visible + .nc-checkbox__knob {
+    outline: 2px solid var(--color-border-focused);
+    outline-offset: 1px;
+}
+
+.nc-link {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--color-content-accent);
+    text-decoration: underline;
+    text-underline-position: from-font;
+}
+
+.nc-link:hover {
+    color: var(--color-content-default);
+}
+
+/* ---------- Button ---------- */
+
+.nc-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    height: 36px;
+    padding: 6px 12px;
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-accent);
+    color: var(--color-content-inverse);
+    font: inherit;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: -0.1px;
+    cursor: pointer;
+}
+
+.nc-button:hover {
+    background: var(--color-surface-accent-hover);
+}
+
+.nc-button:focus-visible {
+    outline: 2px solid var(--color-border-focused);
+    outline-offset: 2px;
+}
+
+.nc-button:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+/* ---------- Legal footer ---------- */
+
+.nc-legal {
+    width: 260px;
+    max-width: 100%;
+    margin: 0;
+    text-align: center;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--color-content-subtlest);
+}
+
+.nc-legal a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-position: from-font;
+}
