@@ -12,7 +12,13 @@ export const Route = createFileRoute('/auth/login')({
   server: {
     handlers: {
       GET: async ({ request }) => {
-        const config = await getOidcConfig()
+        let config: Awaited<ReturnType<typeof getOidcConfig>>
+        try {
+          config = await getOidcConfig()
+        } catch (err) {
+          console.error('Keycloak discovery failed', err)
+          return unavailable()
+        }
         const url = new URL(request.url)
 
         const flow: AuthFlow = {
@@ -34,9 +40,15 @@ export const Route = createFileRoute('/auth/login')({
         if (loginHint) params.login_hint = loginHint
 
         // PAR: the browser only ever sees an opaque request_uri.
-        const authorizationUrl = config.serverMetadata().pushed_authorization_request_endpoint
-          ? await client.buildAuthorizationUrlWithPAR(config, params)
-          : client.buildAuthorizationUrl(config, params)
+        let authorizationUrl: URL
+        try {
+          authorizationUrl = config.serverMetadata().pushed_authorization_request_endpoint
+            ? await client.buildAuthorizationUrlWithPAR(config, params)
+            : client.buildAuthorizationUrl(config, params)
+        } catch (err) {
+          console.error('Pushed authorization request failed', err)
+          return unavailable()
+        }
 
         return new Response(null, {
           status: 302,
@@ -50,3 +62,10 @@ export const Route = createFileRoute('/auth/login')({
     },
   },
 })
+
+function unavailable(): Response {
+  return new Response(
+    'Sign-in is temporarily unavailable: the identity provider could not be reached. Please try again in a moment.',
+    { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store', 'Retry-After': '10' } },
+  )
+}

@@ -7,6 +7,7 @@ export function getRouter() {
     scrollRestoration: true,
     defaultPreload: 'intent',
     defaultPreloadStaleTime: 0,
+    defaultNotFoundComponent: () => <p style={{ padding: 24 }}>Not found</p>,
   })
 
   return router
