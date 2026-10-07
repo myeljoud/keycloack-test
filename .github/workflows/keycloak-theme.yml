@@ -1,0 +1,113 @@
+name: Keycloak theme
+
+# Builds the Keycloakify login theme JAR.
+# - On pull requests touching the theme: build JAR + static Storybook as workflow artifacts for review.
+# - On tags theme-vX.Y.Z: build and attach the JAR and its checksum to a GitHub Release.
+
+on:
+  pull_request:
+    paths:
+      - "keycloak-theme/**"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/keycloak-theme.yml"
+  push:
+    tags:
+      - "theme-v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: keycloak-theme-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build theme JAR
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # Keycloakify's JAR bundler needs a JDK (Maven is not required).
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Resolve version
+        id: version
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/theme-v* ]]; then
+            echo "version=${GITHUB_REF#refs/tags/theme-v}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=0.0.0-pr${{ github.event.pull_request.number || 0 }}.${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Typecheck and build JAR
+        run: pnpm --filter keycloak-theme build-keycloak-theme
+
+      - name: Package artifact
+        run: |
+          mkdir -p out
+          cp keycloak-theme/dist_keycloak/keycloak-theme-for-kc-all-other-versions.jar \
+             "out/next-console-theme-${{ steps.version.outputs.version }}.jar"
+          (cd out && sha256sum "next-console-theme-${{ steps.version.outputs.version }}.jar" \
+             > "next-console-theme-${{ steps.version.outputs.version }}.jar.sha256")
+          cat out/*.sha256
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: next-console-theme-${{ steps.version.outputs.version }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Build static Storybook (review artifact)
+        if: github.event_name == 'pull_request'
+        run: pnpm --filter keycloak-theme exec storybook build --output-dir storybook-static --quiet
+
+      - uses: actions/upload-artifact@v4
+        if: github.event_name == 'pull_request'
+        with:
+          name: storybook-${{ steps.version.outputs.version }}
+          path: keycloak-theme/storybook-static/
+          retention-days: 14
+
+  release:
+    name: Publish GitHub Release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/theme-v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: next-console-theme-${{ needs.build.outputs.version }}
+          path: out
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: Keycloak theme ${{ needs.build.outputs.version }}
+          body: |
+            Keycloakify login theme `next-console`, built for Keycloak 26.x.
+
+            Install: copy the JAR into `/opt/keycloak/providers/` at image build time and run `kc.sh build`.
+            See `keycloak-theme/HANDOFF.md` for the full procedure and the realm settings the theme depends on.
+          files: |
+            out/*.jar
+            out/*.sha256

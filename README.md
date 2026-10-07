@@ -148,6 +148,16 @@ copied into the image rather than bind-mounted on purpose: Keycloak memory-maps
 provider JARs and a macOS bind mount makes it fail with "Failed to load
 themes" in the admin console.
 
+## Working with the Identity team
+
+[keycloak-theme/HANDOFF.md](keycloak-theme/HANDOFF.md) is the agreement between
+the theme owner and the Keycloak owner: who owns what, how the JAR is
+published and installed, the realm settings the theme depends on, and the
+upgrade protocol. The JAR is built by
+[.github/workflows/keycloak-theme.yml](.github/workflows/keycloak-theme.yml):
+on pull requests it uploads the JAR and a static Storybook for review; on a
+`theme-vX.Y.Z` tag it attaches the JAR and checksum to a GitHub Release.
+
 ## Production notes (not done in this PoC)
 
 - Serve the app over https so the cookies get the `__Host-` prefix and `Secure`
