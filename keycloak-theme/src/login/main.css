@@ -24,7 +24,8 @@
     --radius-xl: 12px;
     --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.06);
     --shadow-raised: 0 0 1px rgba(30, 31, 33, 0.31), 0 1px 1px rgba(30, 31, 33, 0.25);
-    --font-ui: "Inter", "Noto Sans Arabic", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --font-ui: "Inter", "Noto Sans Arabic", ui-sans-serif, system-ui, -apple-system,
+        sans-serif;
     --font-heading: "IBM Plex Sans", var(--font-ui);
     --font-brand: -apple-system, "SF Pro", var(--font-ui);
 }
@@ -109,7 +110,11 @@ body {
     transform: translateX(-50%);
     z-index: -1;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(70, 134, 236, 0.18) 0%, rgba(70, 134, 236, 0) 65%);
+    background: radial-gradient(
+        circle,
+        rgba(70, 134, 236, 0.18) 0%,
+        rgba(70, 134, 236, 0) 65%
+    );
     pointer-events: none;
 }
 
@@ -274,7 +279,9 @@ body {
 
 .nc-input-wrap:focus-within {
     border-color: var(--color-border-focused);
-    box-shadow: inset 0 0 0 1px var(--color-border-focused), var(--shadow-subtle);
+    box-shadow:
+        inset 0 0 0 1px var(--color-border-focused),
+        var(--shadow-subtle);
 }
 
 .nc-input-wrap[data-invalid="true"] {
@@ -453,8 +460,7 @@ body {
 /* ---------- Legal footer ---------- */
 
 .nc-legal {
-    width: 260px;
-    max-width: 100%;
+    width: 100%;
     margin: 0;
     text-align: center;
     font-size: 12px;
