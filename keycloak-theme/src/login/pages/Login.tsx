@@ -96,7 +96,7 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
             )}
 
             <p className="nc-legal">
-                By clicking “{msgStr("doLogIn")}” you agree to our <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.
+                {msg("legalNotice", msgStr("doLogIn"))} <a href="#">{msg("termsOfUse")}</a> {msg("legalAnd")} <a href="#">{msg("privacyPolicy")}</a>.
             </p>
         </Template>
     );

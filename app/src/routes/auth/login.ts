@@ -38,6 +38,10 @@ export const Route = createFileRoute('/auth/login')({
         }
         const loginHint = url.searchParams.get('login_hint')
         if (loginHint) params.login_hint = loginHint
+        // The console's current language, e.g. ?ui_locales=fr. Keycloak only
+        // honours values in the realm's supported locales list.
+        const uiLocales = url.searchParams.get('ui_locales')
+        if (uiLocales && /^[a-zA-Z-]{2,10}$/.test(uiLocales)) params.ui_locales = uiLocales
 
         // PAR: the browser only ever sees an opaque request_uri.
         let authorizationUrl: URL

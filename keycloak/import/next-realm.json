@@ -5,6 +5,10 @@
   "loginTheme": "next-console",
   "sslRequired": "external",
 
+  "internationalizationEnabled": true,
+  "supportedLocales": ["en", "fr", "ar"],
+  "defaultLocale": "en",
+
   "registrationAllowed": false,
   "loginWithEmailAllowed": true,
   "duplicateEmailsAllowed": false,

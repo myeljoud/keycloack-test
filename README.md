@@ -130,6 +130,17 @@ Keycloak's. Tokens from the Figma file live in `src/login/main.css`. Every other
 page (reset password, OTP, errors…) still uses Keycloakify's default look until
 it is ejected the same way: `npx keycloakify eject-page` inside `keycloak-theme/`.
 
+### Languages
+
+The realm enables `en`, `fr` and `ar`; the JAR ships Keycloak's bundles for all
+30 locales, so adding a language is a realm setting. The console passes its
+current language with `/auth/login?ui_locales=fr`, and the page also has a
+switcher (links come from Keycloak, so switching keeps the login session).
+Arabic flips the page to RTL automatically; the CSS uses logical properties so
+it mirrors correctly. Wording overrides live in `src/login/i18n.ts` and must be
+given in every supported language: a key defined in only one language becomes
+the fallback for all the others.
+
 After changing the theme: `pnpm build:theme` then `pnpm keycloak:up` (it
 rebuilds the Keycloak image with the new JAR baked in; realm data is kept
 only if the container is not recreated, so expect a fresh realm). The JAR is
@@ -169,6 +180,10 @@ themes" in the admin console.
 **Logout**
 - Dashboard → "Log out" → back on home with "Sign in with Keycloak"; opening `/dashboard` asks for credentials again (Keycloak SSO session ended, not just the app cookie).
 - `curl -X POST http://localhost:3000/auth/logout` without an `Origin` header → 403.
+
+**Languages**
+- `/auth/login?ui_locales=fr` → French page, `?ui_locales=ar` → Arabic page mirrored right-to-left, switcher top corner shows the three languages with the current one highlighted.
+- Switch language on the page, then log in → still lands on `/dashboard` (the switch keeps the auth session).
 
 **Theme tooling**
 - `pnpm theme:dev` → login page renders with mocked context at http://localhost:5173.

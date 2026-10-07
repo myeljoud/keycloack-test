@@ -16,7 +16,7 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
     const { displayMessage = true, headerNode, infoNode = null, displayInfo = false, documentTitle, kcContext, i18n, doUseDefaultCss, children } =
         props;
 
-    const { msgStr } = i18n;
+    const { msgStr, currentLanguage, enabledLanguages } = i18n;
     const { realm, message, isAppInitiatedAction } = kcContext;
 
     useEffect(() => {
@@ -36,6 +36,22 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
                 <img className="nc-grid__diagonal nc-grid__diagonal--right" src={diagonalRight} alt="" />
             </div>
             <div className="nc-glow" aria-hidden="true" />
+
+            {enabledLanguages.length > 1 && (
+                <nav className="nc-lang" aria-label={msgStr("languages")}>
+                    {enabledLanguages.map(({ languageTag, label, href }) => (
+                        <a
+                            key={languageTag}
+                            href={href}
+                            className="nc-lang__item"
+                            aria-current={languageTag === currentLanguage.languageTag ? "true" : undefined}
+                            lang={languageTag}
+                        >
+                            {label}
+                        </a>
+                    ))}
+                </nav>
+            )}
 
             <div className="nc-logo">
                 <img className="nc-logo__mark" src={logo} alt="Next" />
